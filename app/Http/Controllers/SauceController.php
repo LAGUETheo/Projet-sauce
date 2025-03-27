@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Sauce;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthController;
+
 
 class SauceController extends Controller
 {
@@ -70,5 +73,57 @@ class SauceController extends Controller
         $sauce->delete();
     
         return redirect()->route('sauces.index')->with('success', 'Sauce supprimée avec succès');
+    }
+
+    public function like(Sauce $sauce)
+    {
+        $userId = (string) Auth::id();
+
+        // Si l'utilisateur avait déjà liké, on annule le like
+        if (in_array($userId, $sauce->usersLiked ?? [])) {
+            $sauce->usersLiked = array_diff($sauce->usersLiked, [$userId]);
+            $sauce->likes = max(0, $sauce->likes - 1);
+        } else {
+            // Si l'utilisateur avait disliké, on retire le dislike et ajoute le like
+            if (in_array($userId, $sauce->usersDisliked ?? [])) {
+                $sauce->usersDisliked = array_diff($sauce->usersDisliked, [$userId]);
+                $sauce->dislikes = max(0, $sauce->dislikes - 1);
+            }
+
+            // Ajouter le like
+            $sauce->usersLiked = array_merge($sauce->usersLiked ?? [], [$userId]);
+            $sauce->likes += 1;
+        }
+
+        // Sauvegarder les modifications
+        $sauce->save();
+
+        return back()->with('success', 'Action de like mise à jour');
+    }
+
+    public function dislike(Sauce $sauce)
+    {
+        $userId = (string) Auth::id();
+
+        // Si l'utilisateur avait déjà disliké, on annule le dislike
+        if (in_array($userId, $sauce->usersDisliked ?? [])) {
+            $sauce->usersDisliked = array_diff($sauce->usersDisliked, [$userId]);
+            $sauce->dislikes = max(0, $sauce->dislikes - 1);
+        } else {
+            // Si l'utilisateur avait liké, on retire le like et ajoute le dislike
+            if (in_array($userId, $sauce->usersLiked ?? [])) {
+                $sauce->usersLiked = array_diff($sauce->usersLiked, [$userId]);
+                $sauce->likes = max(0, $sauce->likes - 1);
+            }
+
+            // Ajouter le dislike
+            $sauce->usersDisliked = array_merge($sauce->usersDisliked ?? [], [$userId]);
+            $sauce->dislikes += 1;
+        }
+
+        // Sauvegarder les modifications
+        $sauce->save();
+
+        return back()->with('success', 'Action de dislike mise à jour');
     }
 }

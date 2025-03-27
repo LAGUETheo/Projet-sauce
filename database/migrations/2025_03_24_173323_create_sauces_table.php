@@ -23,6 +23,8 @@ class CreateSaucesTable extends Migration
             $table->integer('heat')->default(0);
             $table->json('usersLiked')->nullable();
             $table->json('usersDisliked')->nullable();
+            $table->integer('likes')->default(0);
+            $table->integer('dislikes')->default(0);
             $table->timestamps();
         });
     }

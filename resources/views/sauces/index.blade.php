@@ -34,13 +34,23 @@
         <img src="{{ $sauce->imageUrl }}" alt="{{ $sauce->name }}" class="img-fluid mb-3" style="max-height: 300px;">
         <h4>{{ $sauce->name }}</h4>
         <p class="text-muted">Heat: {{ $sauce->heat }}/10</p>
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center mb-2">
             <a href="{{ route('sauces.show', $sauce->id) }}" class="btn btn-sm btn-outline-secondary me-2">View</a>
             <a href="{{ route('sauces.edit', $sauce->id) }}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
             <form action="{{ route('sauces.destroy', $sauce->id) }}" method="POST" class="d-inline">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sauce ?')">Delete</button>
+            </form>
+        </div>
+        <div class="d-flex justify-content-center">
+            <form action="{{ route('sauces.like', $sauce) }}" method="POST" class="me-2">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-outline-success">Like ({{ $sauce->likes }})</button>
+            </form>
+            <form action="{{ route('sauces.dislike', $sauce) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-outline-danger">Dislike ({{ $sauce->dislikes }})</button>
             </form>
         </div>
     </div>

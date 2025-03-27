@@ -17,6 +17,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Routes des sauces avec authentification
 Route::resource('sauces', SauceController::class)->middleware('auth');
 
+// Routes pour les dislikes et likes
+Route::post('/sauces/{sauce}/like', [SauceController::class, 'like'])->name('sauces.like');
+Route::post('/sauces/{sauce}/dislike', [SauceController::class, 'dislike'])->name('sauces.dislike');
+
 // Routes API
 Route::prefix('api')->middleware('auth:sanctum')->group(function () {
     Route::get('/sauces', [APISauceController::class, 'index']);
