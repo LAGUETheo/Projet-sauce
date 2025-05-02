@@ -41,11 +41,3 @@
 | `password`| String | Mot de passe (haché)             |
 
 ---
-
-## ⚙️ Installation
-
-### 1. Cloner le dépôt
-
-```bash
-git clone https://github.com/remi-gntl/hotsauces-laravel-project.git
-cd hotsauces-laravel-project
